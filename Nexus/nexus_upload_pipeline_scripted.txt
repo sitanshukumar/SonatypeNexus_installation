@@ -1,0 +1,30 @@
+node{
+    stage('continous download')
+    {
+        git 'https://github.com/selenium-saikrishna/maven.git'
+        echo 'repository cloned successfully'
+    }
+    stage('contunous build')
+    {
+      sh 'mvn clean package'
+    }
+    stage('nexus upload')
+    {
+        nexusArtifactUploader artifacts: [
+            [
+                artifactId: 'maven-project',
+                classifier: '',
+                file: 'webapp/target/webapp.war',
+                type: 'war'
+            ]
+            
+        ],
+        credentialsId: '3d5deb17-d809-4219-8bd9-ecd00f304efe',
+        groupId: 'com.example.maven-project',
+        nexusUrl: '172.31.26.7:8081',
+        nexusVersion: 'nexus3',
+        protocol: 'http', 
+        repository: 'maven-project',
+        version: '1.0-SNAPSHOT'
+    }
+}
